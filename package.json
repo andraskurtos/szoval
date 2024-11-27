@@ -3,7 +3,7 @@
 	"type": "module",
 	"scripts": {
 		"start": "vite",
-		"build": "vite build",
+		"build": "vite build --no-prerender --dest docs",
 		"preview": "vite preview"
 	},
 	"dependencies": {
