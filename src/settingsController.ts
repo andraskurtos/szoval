@@ -13,6 +13,27 @@ export class SettingsController {
         this.setTries = setTries;
     }
 
+    public addWord(word: string) {
+        let words = JSON.parse(localStorage.getItem("wordlist"));
+        if (words.includes(word)) {
+            console.log("word already exists");
+            return;
+        }
+        words.push(word);
+        
+        localStorage.setItem("wordlist", JSON.stringify(words));
+    }
+    
+    public removeWord(word: string) {
+        let words = JSON.parse(localStorage.getItem("wordlist"));
+        if (!words.includes(word)) {
+            console.log("word does not exist");
+            return;
+        }
+        words = words.filter((w) => w !== word);
+        localStorage.setItem("wordlist", JSON.stringify(words));
+    }
+
     public setDifficulty(difficulty: string) {
         this.difficulty = difficulty;
         console.log(`set difficulty to ${difficulty}`);

@@ -1,46 +1,26 @@
 import { render } from 'preact';
-
+import wordlist from "./assets/words.json";
 import 'preact-material-components/TopAppBar/style.css';
 import './index.less';
 import { WordleGrid } from './Board';
 import { Navbar } from './Navbar';
 import { SettingsController } from './settingsController';
-import { useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 
 
 
-export function App() {
+export function App() {	
 	let [tries, setTries] = useState(6);
 	let [wordLength, setWordLength] = useState(5);
+	let settings = new SettingsController(setWordLength, setTries);
 
-	const setDifficulty = (difficulty: string) => {
-        switch (difficulty) {
-            case "easy":
-                setWordLength(5);
-                setTries(8);
-                break;
-            case "normal":
-                setWordLength(5);
-                setTries(6);
-                break;
-            case "hard":
-                setWordLength(5);
-                setTries(4);
-                break;
-            case "custom":
-                setWordLength(10);
-                setTries(5);
-                break;
-        }
-    };
+	
 	console.log("refresh");
-	console.log(tries);
-	console.log(wordLength);
 
 	return (
 		<div class="content">
 			<h1>Wordle</h1>
-            <WordleGrid tries={tries} wordLength={wordLength} setDiff={setDifficulty} />
+            <WordleGrid tries={tries} wordLength={wordLength} settingsController={settings} />
 		</div>	
     );
 }

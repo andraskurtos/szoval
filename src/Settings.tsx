@@ -5,9 +5,10 @@ import { SettingsController } from "./settingsController";
 
 
 // Component for the settings
-export function Settings({closeWindow, className, setDiff}: {closeWindow: () => void, className: string, setDiff: (diff:string) => void}){
+export function Settings({closeWindow, className, settingsController}: {closeWindow: () => void, className: string, settingsController: SettingsController}) {
     let [activetab,setactivetab] = useState("general");
     let [activebutton,setactivebutton] = useState("normal");
+    let [wordInput, setWordInput] = useState("");
 
     const onTabClick = (tab:string) => {
         setactivetab(()=>tab);
@@ -15,7 +16,7 @@ export function Settings({closeWindow, className, setDiff}: {closeWindow: () => 
 
     const onDiffClick = (diff:string) => {
         setactivebutton(()=>diff);
-        setDiff(diff);
+        settingsController.setDifficulty(diff);
     }
 
     return (
@@ -47,7 +48,12 @@ export function Settings({closeWindow, className, setDiff}: {closeWindow: () => 
                 </div>
                 <div id="words" className={`settings-tab ${activetab==="words"?"":"invisible"}`}>
                     <h2>Words</h2>
-                    <p>Word settings</p>
+                    <ul>
+                        <li><input type="text" placeholder="Add word" value={wordInput} onInput={(e => setWordInput((e.target as HTMLInputElement).value))}></input></li> 
+                        <li className="activebutton"><button onClick={()=>settingsController.addWord(wordInput)}>Add</button></li>   
+                        <li className="activebutton"><button onClick={()=>settingsController.removeWord(wordInput)}>Delete</button></li>
+                    </ul>
+                    
                 </div>
                 <div id="keyboard" className={`settings-tab ${activetab==="leyboard"?"":"invisible"}`}>
                     <h2>Keyboard</h2>

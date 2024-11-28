@@ -34,7 +34,7 @@ let keys = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n"
 // each row is a guess of the word
 // tries - the number of tries
 // wordLength - the length of the words
-export function WordleGrid({tries, wordLength,setDiff}:{tries:number, wordLength:number,setDiff:(diff)=>void}) {
+export function WordleGrid({tries, wordLength, settingsController}:{tries:number, wordLength:number,settingsController: SettingsController}) {
     
     // useState for the guesses of words
     // two-dimensional array of strings
@@ -128,7 +128,7 @@ export function WordleGrid({tries, wordLength,setDiff}:{tries:number, wordLength
     return (
         <div class="wordle-game">
             <Popup className={(wonGame()||lostGame())?"visible":"invisible"} title={wonGame()?"NYERTÉL!":"VESZTETTÉL!"} message={wonGame()?"Szép játék!":("A szó \""+words.getSolution()) + "\" volt."} onClick={newGame} buttonText="Újra!"/>
-            <Settings closeWindow={closeSettings} className={settings} setDiff={setDiff}/>
+            <Settings closeWindow={closeSettings} className={settings} settingsController={settingsController}/>
             <div className="wordle-grid">
                 {guess.map((row,rowIndex) => (
                     <div class="wordle-row" key={rowIndex}>
