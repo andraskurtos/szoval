@@ -4,19 +4,15 @@ import 'preact-material-components/TopAppBar/style.css';
 import './index.less';
 import { WordleGrid } from './Board';
 import { Navbar } from './Navbar';
-import { Keyboard } from './Keyboard';
-import { Game } from './Game';
-import { Popup } from './Popup';
 
-let handleKeyDown = (event) => {
-	console.log(event.key);
-};
 
 export function App() {
 	
 	return (
+		
 		<div class="content">
-			<Game />
+			<h1>Wordle</h1>
+			<WordleGrid tries={6} wordLength={5} />
 		</div>	
     );
 }

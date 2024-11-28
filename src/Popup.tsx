@@ -1,5 +1,6 @@
 import "./Popup.less"
 
+// component for a popup screen
 export function Popup({className, title, message, onClick, buttonText}: {className: string, title: string, message: string, onClick: () => void, buttonText: string}) {
     return (
         <div className={"popup "+className}>
