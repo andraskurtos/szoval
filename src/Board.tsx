@@ -65,17 +65,23 @@ export function WordleGrid({tries, wordLength}:{tries:number, wordLength:number}
         words = new Words();
     };
 
+    let [settings, setSettings] = useState("invisible");
+
+    const closeSettings = () => {
+        setSettings(()=>"invisible");
+    };
+
 
     function wonGame() : boolean {
         for (let comparison of comparisons ){
             if (comparison.every((color)=> color==="green")) return true;
         }
         return false;
-    }
+    };
 
     function lostGame() : boolean {
         return currentRow === tries;
-    }
+    };
 
     // handles keypresses
     const handleKeyPress = (key: string) => {
@@ -104,11 +110,8 @@ export function WordleGrid({tries, wordLength}:{tries:number, wordLength:number}
 
         
         if (key === "SETTINGS") {
-
-            // open settings menu
-            // TODO - refactor with use state, this is disgusting
-            let settings = document.querySelector(".settings");
-            settings.classList.toggle("invisible");
+            // open settings
+            setSettings("visible");
             return;
         }
         
@@ -120,7 +123,7 @@ export function WordleGrid({tries, wordLength}:{tries:number, wordLength:number}
     return (
         <div class="wordle-grid">
             <Popup className={(wonGame()||lostGame())?"visible":"invisible"} title={wonGame()?"NYERTÉL!":"VESZTETTÉL!"} message={wonGame()?"Szép játék!":("A szó \""+words.getSolution()) + "\" volt."} onClick={newGame} buttonText="Újra!"/>
-            <Settings />
+            <Settings closeWindow={closeSettings} className={settings}/>
             {guess.map((row,rowIndex) => (
                 <div class="wordle-row" key={rowIndex}>
                     {row.map((cell,cellIndex) =>(
