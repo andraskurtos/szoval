@@ -8,8 +8,8 @@
     font-family: "Arial";
     font-weight: bold;
     margin: 0px;
-    border: 1px solid #D3D3D3;
-    box-shadow: 0 1px 8px 0 #C0C0C0, 0 1px 8px 0 #C0C0C0;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 8px 0 var(--shadow-color), 0 1px 8px 0 var(--shadow-color);
     border-radius: 7px;
     cursor: pointer;
     text-align: center;
@@ -19,24 +19,36 @@
 }
 
 .white-key {
-    background-color: white;
-    color: black;
+    background-color: var(--emptycell-bgcolor);
+    color: var(--emptycell-color);
+    &:hover {
+        background-color: var(--emptycell-hover-bgcolor);
+    }
 }
 
 .green-key {
-    background-color: green;
-    color: white;
+    background-color: var(--correctcell-bgcolor);
+    color: var(--correctcell-color);
+    &:hover {
+        background-color: var(--correctcell-hover-bgcolor);
+    }
 }
 
 
 .yellow-key {
-    background-color: yellow;
-    color: white;
+    background-color: var(--semicorrectcell-bgcolor);
+    color: var(--semicorrectcell-color);
+    &:hover {
+        background-color: var(--semicorrectcell-hover-bgcolor);
+    }
 }
 
 .gray-key {
-    background-color: gray;
-    color: white;
+    background-color: var(--incorrectcell-bgcolor);
+    color: var(--incorrectcell-color);
+    &:hover {
+        background-color: var(--incorrectcell-hover-bgcolor);
+    }
 }
 .material-symbols-outlined {
   font-variation-settings:
@@ -46,9 +58,6 @@
   'opsz' 24
 }
 
-.key:hover {
-    background-color: #dddddd;
-}
 
 .keyboard {
     margin-top: 20px; 

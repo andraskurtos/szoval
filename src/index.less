@@ -1,8 +1,44 @@
+:root {
+	--background-color: #f0f0f0;
+
+    --active-bgcolor: green;
+    --active-hover-bgcolor: #00A500;
+    --active-color: white;
+
+    --inactive-bgcolor: white;
+    --inactive-hover-bgcolor: #dddddd;
+    --inactive-color: black;
+
+    --border-color: #d3d3d3;
+    --shadow-color: #c0c0c0;
+
+    --emptycell-bgcolor: white;
+    --emptycell-hover-bgcolor: #dddddd;
+    --emtycell-color: black;
+
+    --correctcell-bgcolor: green;
+    --correctcell-hover-bgcolor: #00A500;
+    --correctcell-color: white;
+
+    --incorrectcell-bgcolor: gray;
+    --incorrectcell-hover-bgcolor: #A0A0A0;
+    --incorrectcell-color: white;
+
+    --semicorrectcell-bgcolor: #E6C400;
+    --semicorrectcell-hover-bgcolor: #FFD700;
+    --semicorrectcell-color: white;
+
+}
+
+
+
+
+
 html {
     font-family: 'Parkinsans', 'Arial'; // Font
     font-size: 16px; // Font mérete (16px=12pt)
     line-height: 1.5; // Sormagasság, 16px*1.5=24px, tipikus mostanában
-    background: white; // Sötét téma sötét háttérrel
+    background: var(--background-color); // Sötét téma sötét háttérrel
     color: black; // Sötét téma fehér betűkkel
 }
 
@@ -58,8 +94,8 @@ button {
 #app {
     display: flex;
     flex-direction: column;
+
     min-height: 80vh;
-    justify-content: center;
     /* Stack elements vertically */
     /* Ensure the app takes up the full height of the viewport */
 }

@@ -1,6 +1,7 @@
 import TopAppBar from 'preact-material-components/TopAppBar';
 import "./Navbar.less";
 
+// Component for a navigation bar
 export function Navbar() {
     
     return(

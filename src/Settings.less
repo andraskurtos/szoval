@@ -1,0 +1,138 @@
+.settings {
+    width: 60%;
+    height: 70%;
+    align-self: center;
+    display: flex;
+    justify-content: start;
+    align-items: start;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    z-index: 200;
+    background-color: var(--background-color);
+    box-shadow: 0 4px 8px 0 var(--shadow-color), 0 6px 20px 0 var(--shadow-color);
+    padding: 0px;
+    position: absolute;
+    top: 10%;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
+}
+
+.activetab {
+    background-color: var(--active-bgcolor);
+    color: var(--active-color);
+    &:hover {
+        background-color: var(--active-hover-bgcolor);
+    }
+}
+
+.settings-nav {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    width: 100%;
+    scrollbar-width: none;
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: row;
+        justify-content: start;
+        width: 100%;
+        li {
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 10px 10px 0 0;
+            transition: background-color 0.5s;
+            border: 1px solid var(--border-color);
+            &:not(.activetab) {
+                background-color: var(--inactive-bgcolor);
+                &:hover {
+                    background-color: var(--inactive-hover-bgcolor);
+                }
+            }
+
+            button {
+                padding: 0px;
+                background-color: transparent;
+                border: 0px;
+                box-shadow: none;
+        
+                &:hover {
+                    background-color: transparent;
+                }
+        }
+    }
+
+    }
+
+}
+
+
+.settings-content {
+    width: 100%;
+    height: 100%;
+    padding: 0px;
+    overflow-y: scroll;
+    align-items: center;
+    justify-content: start;
+    scrollbar-width: none;
+    border-top: 2px solid var(--border-color);
+
+}
+
+
+
+
+.settings-tab {
+    position: absolute;
+    width:100%;
+    height:100%;
+    align-items: center;
+    p {
+        margin: 5px;
+    }
+    h2 {
+        margin: 10px;
+    }
+    ul {
+        list-style: none;
+        text-align: center;
+        padding: 0px 10px 0px 10px;
+
+        li {
+            padding: 5px 0px;
+        }
+    }
+}
+
+.invisible {
+    
+    visibility: hidden;
+    opacity: 0;
+}
+
+
+.diff-button {
+    button {
+        border: none;
+        box-shadow: none;
+        transition: background-color 0.5s;
+        background-color: var(--inactive-bgcolor);
+        color: var(--inactive-color);
+        &:hover {
+            background-color: var(--inactive-hover-bgcolor);
+        }
+    }
+}
+
+
+.activebutton {
+    button {
+        background-color: var(--active-bgcolor);
+        color: var(--active-color);
+        &:hover {
+            background-color: var(--active-hover-bgcolor);
+        }
+    }
+}
