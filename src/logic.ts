@@ -40,15 +40,16 @@ export class Words {
     compare(word:string): string[] {
         let comp = ["white","white","white","white","white"]
         word = word.toLowerCase();
-
+        let solution = this.solution.toLowerCase().split("");
         for (let i = 0; i < word.length; i++) {
-            if (word[i] === this.solution[i]) {
+            if (word[i] === solution[i]) {
                 comp[i] = "green";
-            } else if (this.solution.includes(word[i])) {
+            } else if (solution.includes(word[i]) && word[solution.indexOf(word[i])] !== word[i]) {
                 comp[i] = "yellow";
             } else {
                 comp[i] = "gray";
             }
+            solution[i] = " ";
         }
         return comp;
     }
@@ -60,13 +61,21 @@ export class Words {
 // TODO - refactor this
 export class GameActions {
     private words: Words;
+    private setComparisons: (prev) => void;
+    private setCurrentRow: (prev) => void;
+    private setLetters: (prev) => void;
+    private setGuess: (prev) => void;
     
-    constructor(words: Words) {
+    constructor(words: Words, setComparisons: (prev) => void, setCurrentRow: (prev) => void, setLetters: (prev) => void, setGuess: (prev) => void) {
         this.words = words;
+        this.setComparisons = setComparisons;
+        this.setCurrentRow = setCurrentRow;
+        this.setLetters = setLetters;
+        this.setGuess = setGuess;
     }
 
     // submit a word (called when enter is pressed)
-    wordSubmitted(word: string, setComparisons, setCurrentRow, currentRow, setLetters) : void {
+    wordSubmitted(word: string, currentRow: number) : void {
         
         // if it's too short, return
         if (word.length < 5) {
@@ -84,7 +93,7 @@ export class GameActions {
         const comparison = this.words.compare(word);
         
         // set the colors of the letters
-        setLetters((prevLetters) => {
+        this.setLetters((prevLetters) => {
             const newLetters = {...prevLetters};
             for (let letter of word) {
                 if (newLetters[letter.toLowerCase()] === "green") continue;
@@ -100,23 +109,23 @@ export class GameActions {
         }
 
         // set the comparisons
-        setComparisons((prevComparisons) => {
+        this.setComparisons((prevComparisons) => {
             const newComparisons = [...prevComparisons];
             newComparisons[currentRow] = comparison;
             return newComparisons;
         });
         
         // increment the current row
-        setCurrentRow((prevRow) => {
+        this.setCurrentRow((prevRow) => {
             return prevRow + 1;
         });
 
     }
 
     // delete a letter (called when backspace is pressed)
-    deleteLetter(setGuess, currentRow) : void {
+    deleteLetter(currentRow) : void {
         // delete the last letter
-        setGuess((prevGuess) => {
+        this.setGuess((prevGuess) => {
             const newGuess = [...prevGuess];
                 const row = newGuess[currentRow];
                 const emptyIndex = row.findIndex((cell) => cell === "");
@@ -131,9 +140,9 @@ export class GameActions {
     }
 
     // type a letter (called when a letter is pressed)
-    typedLetter(letter: string, setGuess, currentRow) : void {
+    typedLetter(letter: string, currentRow) : void {
         // type the letter into current row
-        setGuess((prevGuess) => {
+        this.setGuess((prevGuess) => {
             const newGuess = [...prevGuess];
                 const row = newGuess[currentRow];
                 const emptyIndex = row.findIndex((cell) => cell === "");

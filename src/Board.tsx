@@ -85,20 +85,20 @@ export function WordleGrid({tries, wordLength}:{tries:number, wordLength:number}
 
     // handles keypresses
     const handleKeyPress = (key: string) => {
-        let gameActions = new GameActions(words);
+        let gameActions = new GameActions(words, setComparisons, setCurrentRow, setLetters, setGuess);
 
         
         if (key === "ENTER") {
             const guessWord = guess[currentRow].join("");
 
             // submit current guessword
-            gameActions.wordSubmitted(guessWord, setComparisons, setCurrentRow, currentRow, setLetters);
+            gameActions.wordSubmitted(guessWord, currentRow);
             return;
         }
         
         if (key === "BACKSPACE") {
             // delete last letter
-            gameActions.deleteLetter(setGuess, currentRow);
+            gameActions.deleteLetter(currentRow);
             return;
         }
 
@@ -116,7 +116,7 @@ export function WordleGrid({tries, wordLength}:{tries:number, wordLength:number}
         }
         
         // type letter into guess
-        gameActions.typedLetter(key, setGuess, currentRow);
+        gameActions.typedLetter(key, currentRow);
     };
 
     // render the board

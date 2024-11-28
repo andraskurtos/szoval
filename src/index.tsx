@@ -6,6 +6,7 @@ import { WordleGrid } from './Board';
 import { Navbar } from './Navbar';
 
 
+
 export function App() {
 	
 	return (

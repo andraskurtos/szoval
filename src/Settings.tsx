@@ -21,11 +21,11 @@ export function Settings({closeWindow, className}: {closeWindow: () => void, cla
             
             <nav className="settings-nav">
                 <ul>
-                    <li className={`settings-nav-tab${activetab==="general" ? " activetab" : ""}`} id="general"><button onClick={() => onTabClick("general")}>General</button></li>
-                    <li className={`settings-nav-tab"${activetab==="diff"?" activetab":""}`} id="diff"><button onClick={()=>onTabClick("diff")}>Difficulty</button></li>
-                    <li className={`settings-nav-tab"${activetab==="words"?" activetab":""}`} id="words"><button onClick={()=>onTabClick("words")}>Words</button></li>
-                    <li className={`settings-nav-tab"${activetab==="keyboard"?" activetab":""}`} id="keyboard"><button onClick={()=>onTabClick("keyboard")}>Keyboard</button></li>
-                    <li className={`settings-nav-tab"${activetab==="stats"?" activetab":""}`} id="stats"><button onClick={()=>onTabClick("stats")}>Statistics</button></li>
+                    <li className={`settings-nav-tab ${activetab==="general"?" activetab":""}`} id="general"><button onClick={() => onTabClick("general")}>General</button></li>
+                    <li className={`settings-nav-tab ${activetab==="diff"?" activetab":""}`} id="diff"><button onClick={()=>onTabClick("diff")}>Difficulty</button></li>
+                    <li className={`settings-nav-tab ${activetab==="words"?" activetab":""}`} id="words"><button onClick={()=>onTabClick("words")}>Words</button></li>
+                    <li className={`settings-nav-tab ${activetab==="keyboard"?" activetab":""}`} id="keyboard"><button onClick={()=>onTabClick("keyboard")}>Keyboard</button></li>
+                    <li className={`settings-nav-tab ${activetab==="stats"?" activetab":""}`} id="stats"><button onClick={()=>onTabClick("stats")}>Statistics</button></li>
                     <li className="exitbutton"><button onClick={closeWindow}><span className="material-symbols-outlined">close</span></button></li>
                 </ul>
             </nav>
