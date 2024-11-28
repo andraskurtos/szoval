@@ -1,10 +1,11 @@
 import { useState } from "preact/hooks";
 import "./Settings.less"
+import { SettingsController } from "./settingsController";
 
 
 
 // Component for the settings
-export function Settings({closeWindow, className}: {closeWindow: () => void, className: string}) {
+export function Settings({closeWindow, className, setDiff}: {closeWindow: () => void, className: string, setDiff: (diff:string) => void}){
     let [activetab,setactivetab] = useState("general");
     let [activebutton,setactivebutton] = useState("normal");
 
@@ -14,6 +15,7 @@ export function Settings({closeWindow, className}: {closeWindow: () => void, cla
 
     const onDiffClick = (diff:string) => {
         setactivebutton(()=>diff);
+        setDiff(diff);
     }
 
     return (

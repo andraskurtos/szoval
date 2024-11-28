@@ -41,15 +41,17 @@ export class Words {
         let comp = ["white","white","white","white","white"]
         word = word.toLowerCase();
         let solution = this.solution.toLowerCase().split("");
+
         for (let i = 0; i < word.length; i++) {
             if (word[i] === solution[i]) {
                 comp[i] = "green";
-            } else if (solution.includes(word[i]) && word[solution.indexOf(word[i])] !== word[i]) {
+                solution[i] = " ";
+            } else if (solution.includes(word[i])) {
                 comp[i] = "yellow";
+                solution[solution.indexOf(word[i])] = " ";
             } else {
                 comp[i] = "gray";
             }
-            solution[i] = " ";
         }
         return comp;
     }
