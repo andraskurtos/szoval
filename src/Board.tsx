@@ -1,11 +1,11 @@
-
 import { useEffect, useState } from "preact/hooks";
-import "./Board.less";
+import "./less/Board.less";
 import { Keyboard } from "./Keyboard";
 import { GameActions, Words } from "./logic";
 import { Popup } from "./Popup";
 import { Settings } from "./Settings";
 import { SettingsController } from "./settingsController";
+import { Statistics } from "./statistics";
 
 
 // a cell in the board, representing one letter of the word
@@ -19,11 +19,6 @@ export function WordleCell({ value, color }: { value: string , color: string}){
     );
 }
 
-
-
-// the dictionary of words
-let words = new Words()
-
 // the keys of the keyboard
 let keys = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", 
     "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "á", "é", "í", "ó", "ö", "ő", 
@@ -34,7 +29,7 @@ let keys = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n"
 // each row is a guess of the word
 // tries - the number of tries
 // wordLength - the length of the words
-export function WordleGrid({tries, wordLength, settingsController}:{tries:number, wordLength:number,settingsController: SettingsController}) {
+export function WordleGrid({tries, wordLength, settingsController, words}:{tries:number, wordLength:number,settingsController: SettingsController, words: Words}){
     
     // useState for the guesses of words
     // two-dimensional array of strings
@@ -56,19 +51,31 @@ export function WordleGrid({tries, wordLength, settingsController}:{tries:number
     // each key represents a letter
     // each value represents the color of the key
     let [letters, setLetters] = useState(Object.fromEntries(keys.map(key => [key, "white"])));
+
+    // useState for showing bad guess popup
     let [badGuess, setBadGuess] = useState(false);
 
+    let stats = new Statistics();
+    
+    // useEffect for initializing the game
     useEffect(() => {
         newGame()
     }, [tries, wordLength]);
 
+    useEffect(()=>{
+        console.log("words changed");
+    }, [words]);
+
     // resets the board
     const newGame = () => {
+        if (wonGame()|| lostGame()) {
+            stats.addRound(currentRow, wonGame());
+        }
         setGuess(Array.from({length:tries},()=> Array(wordLength).fill("")));
         setCurrentRow(0);
         setComparisons(Array.from({length:tries},()=> Array(wordLength).fill("white")));
         setLetters(Object.fromEntries(keys.map(key => [key, "white"])));
-        words = new Words();
+        words.resetSolution();
     };
 
     let [settings, setSettings] = useState("invisible");
@@ -84,6 +91,11 @@ export function WordleGrid({tries, wordLength, settingsController}:{tries:number
         }
         return false;
     };
+
+    function addButton(key: string) {
+        settingsController.addWord(key);
+        setBadGuess(()=>false);
+    }
 
     function lostGame() : boolean {
         return currentRow === tries;
@@ -133,9 +145,11 @@ export function WordleGrid({tries, wordLength, settingsController}:{tries:number
     // render the board
     return (
         <div class="wordle-game">
-            <Popup className={badGuess?"visible":"invisible"} title="Bad Guess" message="This word is not in the wordlist!" buttonText="EXIT" onClick={()=>setBadGuess(()=>false)} onClick2={()=>settingsController.addWord(guess[currentRow].join(""))} button2Text="ADD"/>
+            <Popup className={badGuess?"visible":"invisible"} title="Bad Guess" message="This word is not in the wordlist!"
+                   buttonText="EXIT" onClick={()=>setBadGuess(()=>false)}
+                   onClick2={()=>addButton(guess[currentRow].join(""))} button2Text="ADD"/>
             <Popup className={(wonGame()||lostGame())?"visible":"invisible"} title={wonGame()?"NYERTÉL!":"VESZTETTÉL!"} message={wonGame()?"Szép játék!":("A szó \""+words.getSolution()) + "\" volt."} onClick={newGame} buttonText="Újra!"/>
-            <Settings closeWindow={closeSettings} className={settings} settingsController={settingsController}/>
+            <Settings closeWindow={closeSettings} className={settings} settingsController={settingsController} stats={stats}/>
             <div className="wordle-grid">
                 {guess.map((row,rowIndex) => (
                     <div class="wordle-row" key={rowIndex}>

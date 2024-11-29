@@ -1,18 +1,19 @@
 import { render } from 'preact';
-import wordlist from "./assets/words.json";
 import 'preact-material-components/TopAppBar/style.css';
-import './index.less';
+import './less/index.less';
 import { WordleGrid } from './Board';
 import { Navbar } from './Navbar';
 import { SettingsController } from './settingsController';
 import { useEffect, useState } from 'preact/hooks';
+import { Words } from './logic';
 
 
 
 export function App() {	
 	let [tries, setTries] = useState(6);
 	let [wordLength, setWordLength] = useState(5);
-	let settings = new SettingsController(setWordLength, setTries);
+	let [words, setWords] = useState(new Words());
+	let settings = new SettingsController(setWordLength, setTries, words);
 
 	
 	console.log("refresh");
@@ -20,7 +21,7 @@ export function App() {
 	return (
 		<div class="content">
 			<h1>Wordle</h1>
-            <WordleGrid tries={tries} wordLength={wordLength} settingsController={settings} />
+            <WordleGrid tries={tries} wordLength={wordLength} settingsController={settings} words={words}/>
 		</div>	
     );
 }

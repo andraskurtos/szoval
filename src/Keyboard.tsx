@@ -1,5 +1,5 @@
 import { useEffect } from "preact/hooks";
-import "./Keyboard.less";
+import "./less/Keyboard.less";
 
 // Component for a key of the keyboard
 // value  - the letter

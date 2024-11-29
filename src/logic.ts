@@ -1,4 +1,5 @@
 import wordlist from "./assets/words.json";
+
 if (!localStorage.getItem('wordlist')) {
     // Only set it if 'wordlist' doesn't already exist in localStorage
     localStorage.setItem('wordlist', JSON.stringify(wordlist));
@@ -60,6 +61,31 @@ export class Words {
         return comp;
     }
 
+    // reset the solution
+    public resetSolution(): void {
+        this.solution = this.pickWord();
+        console.log(this.solution);
+    }
+
+    public addWord(word: string): void {
+        word = word.toLowerCase();
+        if (this.words.includes(word)) {
+            console.log("word already exists");
+            return;
+        }
+        this.words.push(word);
+        localStorage.setItem("wordlist", JSON.stringify(this.words));
+    }
+
+    public removeWord(word: string): void {
+        word = word.toLowerCase();
+        if (!this.words.includes(word)) {
+            console.log("word does not exist");
+            return;
+        }
+        this.words.splice(this.words.indexOf(word), 1);
+        localStorage.setItem("wordlist", JSON.stringify(this.words));
+    }
 
 }
 
