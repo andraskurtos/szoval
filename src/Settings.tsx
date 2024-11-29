@@ -35,7 +35,7 @@ export function Settings({closeWindow, className, settingsController}: {closeWin
             <div className="settings-content">
                 <div id="general" className={`settings-tab ${activetab==="general"?"":"invisible"}`}>
                     <h2>General</h2>
-                    <p>General settings</p>
+                    <button onClick={settingsController.toggleTheme}>Dark Mode Toggle</button>
                 </div>
                 <div className={`settings-tab ${activetab==="diff"?"":"invisible"}`} id="diff">
                     <h2>Difficulty</h2>

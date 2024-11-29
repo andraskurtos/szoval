@@ -25,5 +25,5 @@ export function App() {
     );
 }
 
-render(<Navbar />, document.getElementById('navbar'));
+//render(<Navbar />, document.getElementById('navbar'));
 render(<App />, document.getElementById('app'));
