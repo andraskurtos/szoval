@@ -1,6 +1,6 @@
 .popup {
     width: 30%;
-    height: 20%;
+    height: 25%;
     align-self: center;
     display: flex;
     justify-content: center;
@@ -14,9 +14,17 @@
     position: absolute;
     top: 40%;
     font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    ul {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-direction: row-reverse;
+
+    }
     button {
         background-color: var(--active-bgcolor);
         color: var(--active-color);
+        margin: 5px;
     }
     button:hover {  
         background-color: var(--active-hover-bgcolor);

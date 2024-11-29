@@ -1,4 +1,8 @@
 import wordlist from "./assets/words.json";
+if (!localStorage.getItem('wordlist')) {
+    // Only set it if 'wordlist' doesn't already exist in localStorage
+    localStorage.setItem('wordlist', JSON.stringify(wordlist));
+}
 
 // class for wordlist
 export class Words {
@@ -10,7 +14,7 @@ export class Words {
 
 
     constructor() {
-        this.words = wordlist;
+        this.words = JSON.parse(localStorage.getItem('wordlist'));
         this.solution = this.pickWord();
         console.log(this.solution);
     }
@@ -31,25 +35,27 @@ export class Words {
     }
 
     // pick a random word from the list
-    pickWord() : string {
+    pickWord(): string {
         return this.words[Math.floor(Math.random() * this.words.length)];
     }
 
     // compare a word to the solution, return with array of colors
     // TODO - replace color names with more abstract syntax
-    compare(word:string): string[] {
-        let comp = ["white","white","white","white","white"]
+    compare(word: string): string[] {
+        let comp = ["white", "white", "white", "white", "white"]
         word = word.toLowerCase();
         let solution = this.solution.toLowerCase().split("");
+
         for (let i = 0; i < word.length; i++) {
             if (word[i] === solution[i]) {
                 comp[i] = "green";
-            } else if (solution.includes(word[i]) && word[solution.indexOf(word[i])] !== word[i]) {
+                solution[i] = " ";
+            } else if (solution.includes(word[i])) {
                 comp[i] = "yellow";
+                solution[solution.indexOf(word[i])] = " ";
             } else {
                 comp[i] = "gray";
             }
-            solution[i] = " ";
         }
         return comp;
     }
@@ -65,7 +71,7 @@ export class GameActions {
     private setCurrentRow: (prev) => void;
     private setLetters: (prev) => void;
     private setGuess: (prev) => void;
-    
+
     constructor(words: Words, setComparisons: (prev) => void, setCurrentRow: (prev) => void, setLetters: (prev) => void, setGuess: (prev) => void) {
         this.words = words;
         this.setComparisons = setComparisons;
@@ -75,8 +81,8 @@ export class GameActions {
     }
 
     // submit a word (called when enter is pressed)
-    wordSubmitted(word: string, currentRow: number) : void {
-        
+    wordSubmitted(word: string, currentRow: number): void {
+
         // if it's too short, return
         if (word.length < 5) {
             //console.log("too short");
@@ -85,16 +91,15 @@ export class GameActions {
 
         // if it's not a valid word, return
         if (!this.words.validWord(word)) {
-            //console.log("Invalid word");
-            return;
+            throw new Error("Invalid word");
         }
-        
+
         // compare word to solution
         const comparison = this.words.compare(word);
-        
+
         // set the colors of the letters
         this.setLetters((prevLetters) => {
-            const newLetters = {...prevLetters};
+            const newLetters = { ...prevLetters };
             for (let letter of word) {
                 if (newLetters[letter.toLowerCase()] === "green") continue;
                 newLetters[letter.toLowerCase()] = comparison[word.indexOf(letter)];
@@ -114,7 +119,7 @@ export class GameActions {
             newComparisons[currentRow] = comparison;
             return newComparisons;
         });
-        
+
         // increment the current row
         this.setCurrentRow((prevRow) => {
             return prevRow + 1;
@@ -123,32 +128,32 @@ export class GameActions {
     }
 
     // delete a letter (called when backspace is pressed)
-    deleteLetter(currentRow) : void {
+    deleteLetter(currentRow): void {
         // delete the last letter
         this.setGuess((prevGuess) => {
             const newGuess = [...prevGuess];
-                const row = newGuess[currentRow];
-                const emptyIndex = row.findIndex((cell) => cell === "");
-                if (emptyIndex > 0) {
-                    row[emptyIndex-1] = "";
-                }
-                else if (emptyIndex === -1){
-                    row[row.length-1] = "";
-                }
+            const row = newGuess[currentRow];
+            const emptyIndex = row.findIndex((cell) => cell === "");
+            if (emptyIndex > 0) {
+                row[emptyIndex - 1] = "";
+            }
+            else if (emptyIndex === -1) {
+                row[row.length - 1] = "";
+            }
             return newGuess;
         });
     }
 
     // type a letter (called when a letter is pressed)
-    typedLetter(letter: string, currentRow) : void {
+    typedLetter(letter: string, currentRow): void {
         // type the letter into current row
         this.setGuess((prevGuess) => {
             const newGuess = [...prevGuess];
-                const row = newGuess[currentRow];
-                const emptyIndex = row.findIndex((cell) => cell === "");
-                if (emptyIndex !== -1) {
-                    row[emptyIndex] = letter;
-                }
+            const row = newGuess[currentRow];
+            const emptyIndex = row.findIndex((cell) => cell === "");
+            if (emptyIndex !== -1) {
+                row[emptyIndex] = letter;
+            }
             return newGuess;
         });
     }

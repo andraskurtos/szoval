@@ -1,12 +1,14 @@
 import { useState } from "preact/hooks";
 import "./Settings.less"
+import { SettingsController } from "./settingsController";
 
 
 
 // Component for the settings
-export function Settings({closeWindow, className}: {closeWindow: () => void, className: string}) {
+export function Settings({closeWindow, className, settingsController}: {closeWindow: () => void, className: string, settingsController: SettingsController}) {
     let [activetab,setactivetab] = useState("general");
     let [activebutton,setactivebutton] = useState("normal");
+    let [wordInput, setWordInput] = useState("");
 
     const onTabClick = (tab:string) => {
         setactivetab(()=>tab);
@@ -14,6 +16,7 @@ export function Settings({closeWindow, className}: {closeWindow: () => void, cla
 
     const onDiffClick = (diff:string) => {
         setactivebutton(()=>diff);
+        settingsController.setDifficulty(diff);
     }
 
     return (
@@ -32,7 +35,7 @@ export function Settings({closeWindow, className}: {closeWindow: () => void, cla
             <div className="settings-content">
                 <div id="general" className={`settings-tab ${activetab==="general"?"":"invisible"}`}>
                     <h2>General</h2>
-                    <p>General settings</p>
+                    <button onClick={settingsController.toggleTheme}>Dark Mode Toggle</button>
                 </div>
                 <div className={`settings-tab ${activetab==="diff"?"":"invisible"}`} id="diff">
                     <h2>Difficulty</h2>
@@ -45,7 +48,12 @@ export function Settings({closeWindow, className}: {closeWindow: () => void, cla
                 </div>
                 <div id="words" className={`settings-tab ${activetab==="words"?"":"invisible"}`}>
                     <h2>Words</h2>
-                    <p>Word settings</p>
+                    <ul>
+                        <li><input type="text" placeholder="Add word" value={wordInput} onInput={(e => setWordInput((e.target as HTMLInputElement).value))}></input></li> 
+                        <li className="activebutton"><button onClick={()=>settingsController.addWord(wordInput)}>Add</button></li>   
+                        <li className="activebutton"><button onClick={()=>settingsController.removeWord(wordInput)}>Delete</button></li>
+                    </ul>
+                    
                 </div>
                 <div id="keyboard" className={`settings-tab ${activetab==="leyboard"?"":"invisible"}`}>
                     <h2>Keyboard</h2>

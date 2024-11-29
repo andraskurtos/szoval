@@ -1,10 +1,11 @@
 
-import { useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import "./Board.less";
 import { Keyboard } from "./Keyboard";
 import { GameActions, Words } from "./logic";
 import { Popup } from "./Popup";
 import { Settings } from "./Settings";
+import { SettingsController } from "./settingsController";
 
 
 // a cell in the board, representing one letter of the word
@@ -33,7 +34,7 @@ let keys = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n"
 // each row is a guess of the word
 // tries - the number of tries
 // wordLength - the length of the words
-export function WordleGrid({tries, wordLength}:{tries:number, wordLength:number}) {
+export function WordleGrid({tries, wordLength, settingsController}:{tries:number, wordLength:number,settingsController: SettingsController}) {
     
     // useState for the guesses of words
     // two-dimensional array of strings
@@ -55,6 +56,11 @@ export function WordleGrid({tries, wordLength}:{tries:number, wordLength:number}
     // each key represents a letter
     // each value represents the color of the key
     let [letters, setLetters] = useState(Object.fromEntries(keys.map(key => [key, "white"])));
+    let [badGuess, setBadGuess] = useState(false);
+
+    useEffect(() => {
+        newGame()
+    }, [tries, wordLength]);
 
     // resets the board
     const newGame = () => {
@@ -92,7 +98,12 @@ export function WordleGrid({tries, wordLength}:{tries:number, wordLength:number}
             const guessWord = guess[currentRow].join("");
 
             // submit current guessword
-            gameActions.wordSubmitted(guessWord, currentRow);
+            try {
+                gameActions.wordSubmitted(guessWord, currentRow);
+            }
+            catch (e) {
+                setBadGuess(()=>true);
+            }
             return;
         }
         
@@ -121,16 +132,19 @@ export function WordleGrid({tries, wordLength}:{tries:number, wordLength:number}
 
     // render the board
     return (
-        <div class="wordle-grid">
+        <div class="wordle-game">
+            <Popup className={badGuess?"visible":"invisible"} title="Bad Guess" message="This word is not in the wordlist!" buttonText="EXIT" onClick={()=>setBadGuess(()=>false)} onClick2={()=>settingsController.addWord(guess[currentRow].join(""))} button2Text="ADD"/>
             <Popup className={(wonGame()||lostGame())?"visible":"invisible"} title={wonGame()?"NYERTÉL!":"VESZTETTÉL!"} message={wonGame()?"Szép játék!":("A szó \""+words.getSolution()) + "\" volt."} onClick={newGame} buttonText="Újra!"/>
-            <Settings closeWindow={closeSettings} className={settings}/>
-            {guess.map((row,rowIndex) => (
-                <div class="wordle-row" key={rowIndex}>
-                    {row.map((cell,cellIndex) =>(
-                        <WordleCell value={cell} key={cellIndex} color={comparisons[rowIndex][cellIndex]}/>
-                    ))}
-                </div>
-            ))}
+            <Settings closeWindow={closeSettings} className={settings} settingsController={settingsController}/>
+            <div className="wordle-grid">
+                {guess.map((row,rowIndex) => (
+                    <div class="wordle-row" key={rowIndex}>
+                        {row.map((cell,cellIndex) =>(
+                            <WordleCell value={cell} key={cellIndex} color={comparisons[rowIndex][cellIndex]}/>
+                        ))}
+                    </div>
+                ))}
+            </div>
         <Keyboard onKeyPress={handleKeyPress} letters={letters}/>
         </div>
     );
