@@ -1,3 +1,4 @@
+import { Words } from "./logic";
 
 
 
@@ -8,31 +9,20 @@ export class SettingsController {
     private setWordLength: (prev) => void;
     private setTries: (prev) => void;
     private isDarkMode = false;
+    private words;
 
-    constructor(setWordLength: (prev) => void, setTries: (prev) => void) {
+    constructor(setWordLength: (prev) => void, setTries: (prev) => void, words: Words) {
         this.setWordLength = setWordLength;
         this.setTries = setTries;
+        this.words = words;
     }
 
     public addWord(word: string) {
-        let words = JSON.parse(localStorage.getItem("wordlist"));
-        if (words.includes(word)) {
-            console.log("word already exists");
-            return;
-        }
-        words.push(word);
-        
-        localStorage.setItem("wordlist", JSON.stringify(words));
+        this.words.addWord(word);
     }
     
     public removeWord(word: string) {
-        let words = JSON.parse(localStorage.getItem("wordlist"));
-        if (!words.includes(word)) {
-            console.log("word does not exist");
-            return;
-        }
-        words = words.filter((w) => w !== word);
-        localStorage.setItem("wordlist", JSON.stringify(words));
+        this.words.removeWord(word);
     }
 
     public setDifficulty(difficulty: string) {

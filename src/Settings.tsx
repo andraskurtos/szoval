@@ -1,11 +1,10 @@
-import { useState } from "preact/hooks";
-import "./Settings.less"
+import { useEffect, useState } from "preact/hooks";
+import "./less/Settings.less"
 import { SettingsController } from "./settingsController";
-
-
+import { Statistics } from "./statistics";
 
 // Component for the settings
-export function Settings({closeWindow, className, settingsController}: {closeWindow: () => void, className: string, settingsController: SettingsController}) {
+export function Settings({closeWindow, className, settingsController, stats}: {closeWindow: () => void, className: string, settingsController: SettingsController, stats: Statistics}) {
     let [activetab,setactivetab] = useState("general");
     let [activebutton,setactivebutton] = useState("normal");
     let [wordInput, setWordInput] = useState("");
@@ -18,6 +17,16 @@ export function Settings({closeWindow, className, settingsController}: {closeWin
         setactivebutton(()=>diff);
         settingsController.setDifficulty(diff);
     }
+
+    let statsDict;
+    if (statsDict === undefined) {
+        statsDict = stats.getStats();
+    }
+    
+    useEffect(() => {
+        statsDict = stats.getStats();
+    }, [stats]);
+    
 
     return (
         <div className={`settings ${className}`}>
@@ -61,7 +70,11 @@ export function Settings({closeWindow, className, settingsController}: {closeWin
                 </div>
                 <div id="stats" className={`settings-tab ${activetab==="stats"?"":"invisible"}`}>
                     <h2>Statistics</h2>
-                    <p>Statistics settings</p>
+                    <p>Games: {statsDict.games}</p>
+                    <p>Wins: {statsDict.wins}</p>
+                    <p>Losses: {statsDict.losses}</p>
+                    <p>Winrate: {statsDict.winrate}</p>
+                    <p>Average rounds per game: {statsDict.average}</p>
                 </div>
             </div>
         </div>

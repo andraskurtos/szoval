@@ -1,4 +1,4 @@
-import "./Popup.less"
+import "./less/Popup.less"
 
 // component for a popup screen
 export function Popup({className, title, message, onClick, buttonText, onClick2, button2Text}: {className: string, title: string, message: string, onClick: () => void, buttonText: string, onClick2?: () => void, button2Text?: string}) {
