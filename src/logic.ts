@@ -91,8 +91,7 @@ export class GameActions {
 
         // if it's not a valid word, return
         if (!this.words.validWord(word)) {
-            //console.log("Invalid word");
-            return;
+            throw new Error("Invalid word");
         }
 
         // compare word to solution

@@ -56,6 +56,7 @@ export function WordleGrid({tries, wordLength, settingsController}:{tries:number
     // each key represents a letter
     // each value represents the color of the key
     let [letters, setLetters] = useState(Object.fromEntries(keys.map(key => [key, "white"])));
+    let [badGuess, setBadGuess] = useState(false);
 
     useEffect(() => {
         newGame()
@@ -97,7 +98,12 @@ export function WordleGrid({tries, wordLength, settingsController}:{tries:number
             const guessWord = guess[currentRow].join("");
 
             // submit current guessword
-            gameActions.wordSubmitted(guessWord, currentRow);
+            try {
+                gameActions.wordSubmitted(guessWord, currentRow);
+            }
+            catch (e) {
+                setBadGuess(()=>true);
+            }
             return;
         }
         
@@ -127,6 +133,7 @@ export function WordleGrid({tries, wordLength, settingsController}:{tries:number
     // render the board
     return (
         <div class="wordle-game">
+            <Popup className={badGuess?"visible":"invisible"} title="Bad Guess" message="This word is not in the wordlist!" buttonText="EXIT" onClick={()=>setBadGuess(()=>false)} onClick2={()=>settingsController.addWord(guess[currentRow].join(""))} button2Text="ADD"/>
             <Popup className={(wonGame()||lostGame())?"visible":"invisible"} title={wonGame()?"NYERTÉL!":"VESZTETTÉL!"} message={wonGame()?"Szép játék!":("A szó \""+words.getSolution()) + "\" volt."} onClick={newGame} buttonText="Újra!"/>
             <Settings closeWindow={closeSettings} className={settings} settingsController={settingsController}/>
             <div className="wordle-grid">
