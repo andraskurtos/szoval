@@ -17,8 +17,8 @@ export class Statistics {
             this.average = statsdict.average;
             this.wins = statsdict.wins;
             this.losses = statsdict.losses;
-            this.winrate = this.wins / this.games;
             this.games = statsdict.games;
+            this.winrate = this.wins / this.games;
         }
     }
 

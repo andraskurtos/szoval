@@ -73,8 +73,8 @@ export function Settings({closeWindow, className, settingsController, stats}: {c
                     <p>Games: {statsDict.games}</p>
                     <p>Wins: {statsDict.wins}</p>
                     <p>Losses: {statsDict.losses}</p>
-                    <p>Winrate: {statsDict.winrate}</p>
-                    <p>Average rounds per game: {statsDict.average}</p>
+                    <p>Winrate: {statsDict.winrate.toFixed(2)}</p>
+                    <p>Average rounds per game: {statsDict.average.toFixed(2)}</p>
                 </div>
             </div>
         </div>
