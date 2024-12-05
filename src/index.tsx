@@ -12,11 +12,9 @@ import { Words } from './logic';
 export function App() {	
 	let [tries, setTries] = useState(6);
 	let [wordLength, setWordLength] = useState(5);
-	let [words, setWords] = useState(new Words());
-	let settings = new SettingsController(setWordLength, setTries, words);
+	let [words, setWords] = useState(new Words(wordLength));
+	let settings = new SettingsController(setWordLength, setTries, words, tries, wordLength);
 
-	
-	console.log("refresh");
 
 	return (
 		<div class="content">

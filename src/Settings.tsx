@@ -36,7 +36,6 @@ export function Settings({closeWindow, className, settingsController, stats}: {c
                     <li className={`settings-nav-tab ${activetab==="general"?" activetab":""}`} id="general"><button onClick={() => onTabClick("general")}>General</button></li>
                     <li className={`settings-nav-tab ${activetab==="diff"?" activetab":""}`} id="diff"><button onClick={()=>onTabClick("diff")}>Difficulty</button></li>
                     <li className={`settings-nav-tab ${activetab==="words"?" activetab":""}`} id="words"><button onClick={()=>onTabClick("words")}>Words</button></li>
-                    <li className={`settings-nav-tab ${activetab==="keyboard"?" activetab":""}`} id="keyboard"><button onClick={()=>onTabClick("keyboard")}>Keyboard</button></li>
                     <li className={`settings-nav-tab ${activetab==="stats"?" activetab":""}`} id="stats"><button onClick={()=>onTabClick("stats")}>Statistics</button></li>
                     <li className="exitbutton"><button onClick={closeWindow}><span className="material-symbols-outlined">close</span></button></li>
                 </ul>
@@ -54,6 +53,16 @@ export function Settings({closeWindow, className, settingsController, stats}: {c
                         <li onClick={()=>onDiffClick("hard")} id="hard" className={`diff-button ${activebutton==="hard"?"activebutton":""}`}><button>Hard</button></li>
                         <li onClick={()=>onDiffClick("custom")} id="custom" className={`diff-button ${activebutton==="custom"?"activebutton":""}`}><button>Custom</button></li>
                     </ul>
+                    <div className={`diff-inputs ${activebutton==="custom"?"visible":"invisible"}`}>
+                        <div className="diff-inputs-row">
+                            <label className="diff-label" htmlFor="wordlength">Word length:</label>
+                            <input min="2" max="8" className="diff-input" type="number" id="wordlength" value={settingsController.getWordLength()} onInput={(e) => settingsController.changeWordLength(Number((e.target as HTMLInputElement).value))}></input>
+                        </div>
+                        <div className="diff-inputs-row">
+                            <label className="diff-label" htmlFor="tries">Tries:</label>
+                            <input min="1" max="12" className="diff-input" type="number" id="tries" value={settingsController.getTries()} onInput={(e) => settingsController.changeTries(Number((e.target as HTMLInputElement).value))}></input>
+                        </div> 
+                    </div>
                 </div>
                 <div id="words" className={`settings-tab ${activetab==="words"?"":"invisible"}`}>
                     <h2>Words</h2>
@@ -64,17 +73,13 @@ export function Settings({closeWindow, className, settingsController, stats}: {c
                     </ul>
                     
                 </div>
-                <div id="keyboard" className={`settings-tab ${activetab==="leyboard"?"":"invisible"}`}>
-                    <h2>Keyboard</h2>
-                    <p>Keyboard settings</p>
-                </div>
                 <div id="stats" className={`settings-tab ${activetab==="stats"?"":"invisible"}`}>
                     <h2>Statistics</h2>
                     <p>Games: {statsDict.games}</p>
                     <p>Wins: {statsDict.wins}</p>
                     <p>Losses: {statsDict.losses}</p>
-                    <p>Winrate: {statsDict.winrate}</p>
-                    <p>Average rounds per game: {statsDict.average}</p>
+                    <p>Winrate: {statsDict.winrate.toFixed(2)}</p>
+                    <p>Average rounds per game: {statsDict.average.toFixed(2)}</p>
                 </div>
             </div>
         </div>

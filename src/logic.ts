@@ -12,14 +12,18 @@ export class Words {
 
     // solution of the game
     private solution: string;
+    private wordLength: number;
 
 
-    constructor() {
+    constructor(wordLength: number) {
         this.words = JSON.parse(localStorage.getItem('wordlist'));
+        this.wordLength = wordLength;
         this.solution = this.pickWord();
-        console.log(this.solution);
     }
 
+    setWordLength(wordLength: number) {
+        this.wordLength = wordLength;
+    }
     // getter for words
     getWords(): string[] {
         return this.words;
@@ -32,12 +36,12 @@ export class Words {
 
     // check if a word is in the wordlist
     validWord(word: string): boolean {
-        return this.words.includes(word.toLowerCase());
+        return this.words[String(this.wordLength)].includes(word.toLowerCase());
     }
 
     // pick a random word from the list
     pickWord(): string {
-        return this.words[Math.floor(Math.random() * this.words.length)];
+        return this.words[String(this.wordLength)][Math.floor(Math.random() * this.words[String(this.wordLength)].length)];
     }
 
     // compare a word to the solution, return with array of colors
@@ -67,23 +71,35 @@ export class Words {
         console.log(this.solution);
     }
 
+    getWordLength(): number {
+        return this.wordLength;
+    }
+
     public addWord(word: string): void {
         word = word.toLowerCase();
-        if (this.words.includes(word)) {
+        let length = word.length;
+        if (length > 8 || length < 3) {
+            console.log("word invalid length")
+            return;
+        }
+        if (this.words[String(length)].includes(word)) {
             console.log("word already exists");
             return;
         }
-        this.words.push(word);
+        
+        this.words[String(length)].push(word);
         localStorage.setItem("wordlist", JSON.stringify(this.words));
     }
 
     public removeWord(word: string): void {
         word = word.toLowerCase();
-        if (!this.words.includes(word)) {
+        let length = word.length;
+        if (length > 8 || length < 3) return;
+        if (!this.words[String(length)].includes(word)) {
             console.log("word does not exist");
             return;
         }
-        this.words.splice(this.words.indexOf(word), 1);
+        this.words[String(length)].splice(this.words[String(length)].indexOf(word), 1);
         localStorage.setItem("wordlist", JSON.stringify(this.words));
     }
 
@@ -110,7 +126,7 @@ export class GameActions {
     wordSubmitted(word: string, currentRow: number): void {
 
         // if it's too short, return
-        if (word.length < 5) {
+        if (word.length < this.words.getWordLength()) {
             //console.log("too short");
             return;
         }
