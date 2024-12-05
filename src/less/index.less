@@ -40,6 +40,7 @@ html {
     line-height: 1.5; // Sormagasság, 16px*1.5=24px, tipikus mostanában
     background: var(--background-color); // Sötét téma sötét háttérrel
     color: var(--inactive-color); // Sötét téma fehér betűkkel
+    overflow: hidden;
 }
 
 
@@ -55,6 +56,11 @@ div {
 body {
     min-height: 100vh; // ablak méretű
     max-height: 100vh; // ablak méretű
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 input,
@@ -94,7 +100,7 @@ button {
 #app {
     display: flex;
     flex-direction: column;
-
+    justify-content: center;
     min-height: 80vh;
     /* Stack elements vertically */
     /* Ensure the app takes up the full height of the viewport */
