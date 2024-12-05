@@ -3,31 +3,47 @@ import { Words } from "./logic";
 
 
 export class SettingsController {
-    private difficulty = "normal";
-    private wordLength = 5;
-    private tries = 6;
+    private wordLength;
+    private tries;
     private setWordLength: (prev) => void;
     private setTries: (prev) => void;
     private isDarkMode = false;
     private words;
+    private difficulty;
 
-    constructor(setWordLength: (prev) => void, setTries: (prev) => void, words: Words) {
+    constructor(setWordLength: (prev) => void, setTries: (prev) => void, words: Words, tries: number, wordLength: number) {
         this.setWordLength = setWordLength;
         this.setTries = setTries;
         this.words = words;
+        this.wordLength = wordLength;
+        this.tries = tries;
+        if (this.wordLength === 5) {
+            if (this.tries === 8) {
+                this.difficulty = "easy";
+            } else if (this.tries === 6) {
+                this.difficulty = "normal";
+            } else if (this.tries === 4) {
+                this.difficulty = "hard";
+            }
+            else {
+                this.difficulty = "custom";
+            }
+        }
+        else {
+            this.difficulty = "custom";
+        }
     }
 
     public addWord(word: string) {
         this.words.addWord(word);
     }
-    
+
     public removeWord(word: string) {
         this.words.removeWord(word);
     }
 
     public setDifficulty(difficulty: string) {
         this.difficulty = difficulty;
-        console.log(`set difficulty to ${difficulty}`);
         switch (difficulty) {
             case "easy":
                 this.wordLength = 5;
@@ -42,17 +58,19 @@ export class SettingsController {
                 this.tries = 4;
                 break;
             case "custom":
-                this.wordLength = 10;
-                this.tries = 5;
-                break;
+                return;
         }
         this.setWordLength(this.wordLength);
+        this.words.changeWordLength(this.wordLength);
         this.setTries(this.tries);
+    }
+
+    public getDifficulty() {
+        return this.difficulty;
     }
 
     public toggleTheme = () => {
         const root = document.documentElement;
-        console.log("toggle theme");
         this.isDarkMode = !this.isDarkMode;
         if (this.isDarkMode) {
             root.style.setProperty('--background-color', '#222222'); // Sötét háttér
@@ -76,7 +94,7 @@ export class SettingsController {
             root.style.setProperty('--semicorrectcell-bgcolor', '#CC8A00'); // Sötétebb sárga
             root.style.setProperty('--semicorrectcell-hover-bgcolor', '#B88A00'); // Sötétebb sárga hover
             root.style.setProperty('--semicorrectcell-color', 'white'); // Fehér szöveg
-            
+
         } else {
             root.style.setProperty('--background-color', '#f0f0f0');
             root.style.setProperty('--active-bgcolor', 'green');
@@ -100,6 +118,28 @@ export class SettingsController {
             root.style.setProperty('--semicorrectcell-hover-bgcolor', '#FFD700');
             root.style.setProperty('--semicorrectcell-color', 'white');
         }
-      };
+    };
 
+    public changeTries(tries: number): void {
+        if (tries > 12) this.tries = 12;
+        else if (tries<1) this.tries = 1;
+        else this.tries = tries;
+        this.setTries(this.tries);
+    };
+
+    public changeWordLength(wordLength: number): void {
+        if (wordLength > 8) this.wordLength = 8;
+        else if (wordLength < 2) this.wordLength = 2;
+        else this.wordLength = wordLength;
+        this.setWordLength(this.wordLength);
+        this.words.setWordLength(this.wordLength);
+    };
+
+    public getWordLength(): number {
+        return this.wordLength;
+    }
+
+    public getTries(): number {
+        return this.tries;
+    }   
 }

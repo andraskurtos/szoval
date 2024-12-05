@@ -63,7 +63,6 @@ export function WordleGrid({tries, wordLength, settingsController, words}:{tries
     }, [tries, wordLength]);
 
     useEffect(()=>{
-        console.log("words changed");
     }, [words]);
 
     // resets the board
