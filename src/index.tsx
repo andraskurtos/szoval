@@ -3,7 +3,6 @@ import 'preact-material-components/TopAppBar/style.css';
 import './less/index.less';
 import { WordleGrid } from './Board';
 import { SettingsController } from './settingsController';
-import "./Pwa";
 
 
 
