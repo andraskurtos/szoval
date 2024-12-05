@@ -110,6 +110,8 @@ export function WordleGrid({settingsController}:{settingsController: SettingsCon
     // handles keypresses
     const handleKeyPress = (key: string) => {
         let gameActions = new GameActions(words, setComparisons, setCurrentRow, setLetters, setGuess);
+
+        
         switch (key) {
             case "ENTER":
             if (wonGame() || lostGame()) {
