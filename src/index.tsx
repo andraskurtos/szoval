@@ -10,6 +10,7 @@ import "./Pwa";
 let settings = new SettingsController();
 
 export function App() {	
+	Notification.requestPermission();
 
 	return (
 		<div class="content">

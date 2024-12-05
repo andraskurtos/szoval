@@ -5,7 +5,7 @@ async function impl(e) {
     if (cacheResponse)
         return cacheResponse
     else {
-        let networkResponse = await fetch(e.request);
+        let networkResponse = await fetch(e.request, {method:"GET", mode: "cors",});
         cache.put(e.request, networkResponse.clone())
         return networkResponse;
     }
