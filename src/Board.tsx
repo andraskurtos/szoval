@@ -29,8 +29,11 @@ let keys = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n"
 // each row is a guess of the word
 // tries - the number of tries
 // wordLength - the length of the words
-export function WordleGrid({tries, wordLength, settingsController, words}:{tries:number, wordLength:number,settingsController: SettingsController, words: Words}){
+export function WordleGrid({settingsController}:{settingsController: SettingsController}){
     
+    let tries = settingsController.getTries();
+    let wordLength = settingsController.getWordLength();
+    let words = settingsController.getWords();
     // useState for the guesses of words
     // two-dimensional array of strings
     // each row represents a guess
@@ -62,19 +65,19 @@ export function WordleGrid({tries, wordLength, settingsController, words}:{tries
         newGame()
     }, [tries, wordLength]);
 
-    useEffect(()=>{
-    }, [words]);
 
     // resets the board
     const newGame = () => {
+
         if (wonGame()|| lostGame()) {
             stats.addRound(currentRow, wonGame());
+            settingsController.solveDaily();
         }
         setGuess(Array.from({length:tries},()=> Array(wordLength).fill("")));
         setCurrentRow(0);
         setComparisons(Array.from({length:tries},()=> Array(wordLength).fill("white")));
         setLetters(Object.fromEntries(keys.map(key => [key, "white"])));
-        words.resetSolution();
+        if (!settingsController.isDaily()) words.resetSolution();
     };
 
     let [settings, setSettings] = useState("invisible");
@@ -86,7 +89,9 @@ export function WordleGrid({tries, wordLength, settingsController, words}:{tries
 
     function wonGame() : boolean {
         for (let comparison of comparisons ){
-            if (comparison.every((color)=> color==="green")) return true;
+            if (comparison.every((color)=> color==="green")) {
+                return true;
+            }
         }
         return false;
     };
@@ -97,7 +102,9 @@ export function WordleGrid({tries, wordLength, settingsController, words}:{tries
     }
 
     function lostGame() : boolean {
-        return currentRow === tries;
+        if (currentRow === tries) {
+            return true;
+        }
     };
 
     // handles keypresses
@@ -105,40 +112,50 @@ export function WordleGrid({tries, wordLength, settingsController, words}:{tries
         let gameActions = new GameActions(words, setComparisons, setCurrentRow, setLetters, setGuess);
 
         
-        if (key === "ENTER") {
-            const guessWord = guess[currentRow].join("");
+        switch (key) {
+            case "ENTER":
+            if (wonGame() || lostGame()) {
+                newGame();
+                break;
+            } else if (badGuess) {
+                addButton(guess[currentRow].join(""));
+                break;
+            }
 
-            // submit current guessword
+            const guessWord = guess[currentRow].join("");
             try {
                 gameActions.wordSubmitted(guessWord, currentRow);
+            } catch (e) {
+                setBadGuess(() => true);
             }
-            catch (e) {
-                setBadGuess(()=>true);
-            }
-            return;
-        }
-        
-        if (key === "BACKSPACE") {
-            // delete last letter
+            break;
+
+            case "ESCAPE":
+                if (badGuess) {
+                    setBadGuess(() => false);
+                }
+                else {
+                    newGame();
+                }
+            break;
+
+            case "BACKSPACE":
             gameActions.deleteLetter(currentRow);
-            return;
-        }
+            break;
 
-        if (key === "REFRESH") {
-            // refresh the game
+            case "REFRESH":
             newGame();
-            return;
-        }
+            break;
 
-        
-        if (key === "SETTINGS") {
-            // open settings
+            case "SETTINGS":
             setSettings("visible");
-            return;
+            break;
+
+            default:
+            // type letter into guess
+            gameActions.typedLetter(key, currentRow);
+            break;
         }
-        
-        // type letter into guess
-        gameActions.typedLetter(key, currentRow);
     };
 
     // render the board
