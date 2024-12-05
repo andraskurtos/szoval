@@ -62,7 +62,7 @@ export function Settings({ closeWindow, className, settingsController, stats }: 
                     <h2>General</h2>
                     <button onClick={settingsController.toggleTheme}>Dark Mode Toggle</button>
                     <button onClick={settingsController.loadDaily}>Load Daily Challenge</button>
-                    <button onClick={() => { Notification.requestPermission() }}>Enable Notifications</button>
+                    <button onClick={() => { if (supportsNotifs) Notification.requestPermission() }}>Enable Notifications</button>
                 </div>
                 <div className={`settings-tab ${activetab === "diff" ? "" : "invisible"}`} id="diff">
                     <h2>Difficulty</h2>
