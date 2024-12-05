@@ -1,0 +1,44 @@
+.popup {
+    width: 30%;
+    height: 25%;
+    align-self: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    z-index: 1000;
+    background-color: var(--background-color);
+    box-shadow: 0 4px 8px 0 var(--shadow-color), 0 6px 8px 0 var(--shadow-color);
+    padding: 30px;
+    position: absolute;
+    top: 40%;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    ul {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-direction: row-reverse;
+
+    }
+    button {
+        background-color: var(--active-bgcolor);
+        color: var(--active-color);
+        margin: 5px;
+    }
+    button:hover {  
+        background-color: var(--active-hover-bgcolor);
+    }
+
+}
+
+.visible {
+    visibility: visible;
+    opacity: 1
+}
+
+.invisible {
+    
+    visibility: hidden;
+    opacity: 0;
+}

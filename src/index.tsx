@@ -1,25 +1,22 @@
 import { render } from 'preact';
-
 import 'preact-material-components/TopAppBar/style.css';
-import './index.less';
+import './less/index.less';
 import { WordleGrid } from './Board';
-import { Navbar } from './Navbar';
-import { Keyboard } from './Keyboard';
-import { Game } from './Game';
-import { Popup } from './Popup';
+import { SettingsController } from './settingsController';
 
-let handleKeyDown = (event) => {
-	console.log(event.key);
-};
 
-export function App() {
-	
+
+let settings = new SettingsController();
+
+export function App() {	
+
 	return (
 		<div class="content">
-			<Game />
+			<h1>Wordle</h1>
+            <WordleGrid settingsController={settings}/>
 		</div>	
     );
 }
 
-render(<Navbar />, document.getElementById('navbar'));
+//render(<Navbar />, document.getElementById('navbar'));
 render(<App />, document.getElementById('app'));

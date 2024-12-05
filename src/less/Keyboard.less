@@ -1,0 +1,83 @@
+.key {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    height: 30px;
+    width: 23px;
+    font-size: 25px;
+    font-family: "Arial";
+    font-weight: bold;
+    margin: 0px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 8px 0 var(--shadow-color), 0 1px 8px 0 var(--shadow-color);
+    border-radius: 7px;
+    cursor: pointer;
+    text-align: center;
+    align-items: center;
+    transition: background-color 0.3s;
+    background-color: val(--emptycell-bgcolor);
+    color: var(--emptycell-color);
+    &:hover {
+        background-color: var(--emptycell-hover-bgcolor);
+    }
+
+}
+
+.white-key {
+    background-color: var(--emptycell-bgcolor);
+    color: var(--emptycell-color);
+    &:hover {
+        background-color: var(--emptycell-hover-bgcolor);
+    }
+}
+
+.green-key {
+    background-color: var(--correctcell-bgcolor);
+    color: var(--correctcell-color);
+    &:hover {
+        background-color: var(--correctcell-hover-bgcolor);
+    }
+}
+
+
+.yellow-key {
+    background-color: var(--semicorrectcell-bgcolor);
+    color: var(--semicorrectcell-color);
+    &:hover {
+        background-color: var(--semicorrectcell-hover-bgcolor);
+    }
+}
+
+.gray-key {
+    background-color: var(--incorrectcell-bgcolor);
+    color: var(--incorrectcell-color);
+    &:hover {
+        background-color: var(--incorrectcell-hover-bgcolor);
+    }
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
+
+
+.keyboard {
+    margin-top: 20px; 
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.keyboard-row {
+    display: flex;
+    flex-direction: row;
+    margin: 0px;
+    padding: 0px;
+    gap: 5px;
+}

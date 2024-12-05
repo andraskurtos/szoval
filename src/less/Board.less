@@ -1,0 +1,70 @@
+.wordle-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    font-size: 40px;
+    font-family: "Arial";
+    font-weight: bold;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 8px 0 var(--shadow-color), 0 6px 20px 0 var(--shadow-color);
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 1s;
+    border-radius: 7px;
+}
+
+
+.white-cell {
+    background-color: var(--emptycell-bgcolor);
+    color: var(--emptycell-color);
+    &:hover {
+        background-color: var(--emptycell-hover-bgcolor);
+    }
+}
+
+.green-cell {
+    background-color: var(--correctcell-bgcolor);
+    color: var(--correctcell-color);
+    &:hover {
+        background-color: var(--correctcell-hover-bgcolor);
+    }
+}
+
+.yellow-cell {
+    background-color: var(--semicorrectcell-bgcolor);
+    color: var(--semicorrectcell-color);  
+    &:hover {
+        background-color: var(--semicorrectcell-hover-bgcolor);
+    }
+}
+
+.gray-cell {
+    background-color: var(--incorrectcell-bgcolor);
+    color: var(--incorrectcell-color);
+    &:hover {
+        background-color: var(--incorrectcell-hover-bgcolor);
+    }
+}
+
+.wordle-row {
+    display: flex;
+    flex-direction: row;
+    margin: 0px;
+    column-gap: 5px;
+    align-self: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.wordle-grid {
+    align-self: center;
+    gap: 5px;
+    display: flex;
+    flex-direction: column;
+    height: 50vh;
+    width: 60vh;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
