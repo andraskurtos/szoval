@@ -1,37 +1,21 @@
+import { DailyChallenge } from "./daily";
 import { Words } from "./logic";
 
 
 
 export class SettingsController {
-    private wordLength;
-    private tries;
-    private setWordLength: (prev) => void;
-    private setTries: (prev) => void;
+    private wordLength = 5;
+    private tries = 6;
     private isDarkMode = false;
-    private words;
-    private difficulty;
+    private words : Words = new Words(this.wordLength);
+    private difficulty = "normal"
+    private daily: boolean = false;
+    private currentDaily: DailyChallenge = new DailyChallenge();
+    private notifPermission = false;
 
-    constructor(setWordLength: (prev) => void, setTries: (prev) => void, words: Words, tries: number, wordLength: number) {
-        this.setWordLength = setWordLength;
-        this.setTries = setTries;
-        this.words = words;
-        this.wordLength = wordLength;
-        this.tries = tries;
-        if (this.wordLength === 5) {
-            if (this.tries === 8) {
-                this.difficulty = "easy";
-            } else if (this.tries === 6) {
-                this.difficulty = "normal";
-            } else if (this.tries === 4) {
-                this.difficulty = "hard";
-            }
-            else {
-                this.difficulty = "custom";
-            }
-        }
-        else {
-            this.difficulty = "custom";
-        }
+
+    public setPermission(perm: boolean) {
+        this.notifPermission = perm;
     }
 
     public addWord(word: string) {
@@ -46,23 +30,20 @@ export class SettingsController {
         this.difficulty = difficulty;
         switch (difficulty) {
             case "easy":
-                this.wordLength = 5;
-                this.tries = 8;
+                this.changeWordLength(5);
+                this.changeTries(8);
                 break;
             case "normal":
-                this.wordLength = 5;
-                this.tries = 6;
+                this.changeWordLength(5);
+                this.changeTries(6);
                 break;
             case "hard":
-                this.wordLength = 5;
-                this.tries = 4;
+                this.changeWordLength(5);
+                this.changeTries(8);
                 break;
             case "custom":
-                return;
+                break;
         }
-        this.setWordLength(this.wordLength);
-        this.words.changeWordLength(this.wordLength);
-        this.setTries(this.tries);
     }
 
     public getDifficulty() {
@@ -120,20 +101,47 @@ export class SettingsController {
         }
     };
 
+    
+
+
     public changeTries(tries: number): void {
         if (tries > 12) this.tries = 12;
         else if (tries<1) this.tries = 1;
         else this.tries = tries;
-        this.setTries(this.tries);
     };
 
     public changeWordLength(wordLength: number): void {
         if (wordLength > 8) this.wordLength = 8;
         else if (wordLength < 2) this.wordLength = 2;
         else this.wordLength = wordLength;
-        this.setWordLength(this.wordLength);
         this.words.setWordLength(this.wordLength);
     };
+    
+    public loadDaily = () => {
+        if (this.currentDaily.isSolved()) { 
+            alert("daily already solved!");
+            return;
+        }
+        this.daily = true;
+        this.setDifficulty("custom");
+        this.changeWordLength(Number(this.currentDaily.getWordLength()));
+        this.changeTries(this.currentDaily.getTries());
+        this.words.setSolution(this.currentDaily.getSolution());
+    }
+
+    public solveDaily = () => {
+        if (this.daily === false) return;
+        this.currentDaily.setSolved(true);
+        this.daily = false;
+    }
+
+    isDaily(): boolean {
+        return this.daily;
+    }
+
+    setDaily(value: boolean) {
+        this.daily = value;
+    }
 
     public getWordLength(): number {
         return this.wordLength;
@@ -142,4 +150,13 @@ export class SettingsController {
     public getTries(): number {
         return this.tries;
     }   
+
+    public getWords() {
+        return this.words;
+    }
+
+    public isDailySolved(): boolean {
+        return this.currentDaily.isSolved();
+    }
+
 }

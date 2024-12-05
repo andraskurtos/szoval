@@ -33,7 +33,7 @@ export function Keyboard({ onKeyPress , letters}: { onKeyPress: (key: string) =>
 
             // TODO - fix this uppercase - lowercase hell
             const key = event.key.toLowerCase();
-            if (allKeys.includes(key)) {
+            if (allKeys.includes(key) || key === "escape") {
                 onKeyPress(key.toUpperCase());
             }
         };

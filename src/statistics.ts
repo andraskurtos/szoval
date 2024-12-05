@@ -23,7 +23,6 @@ export class Statistics {
     }
 
     public addRound(currentRound: number, win: boolean) {
-        console.log("add round");
         this.games++;
         if (win) {
             this.wins += 1;
@@ -31,7 +30,6 @@ export class Statistics {
             this.losses += 1;
         }
         this.winrate = this.games===0?0:this.wins / this.games;
-        console.log(this.winrate);
         this.average = (this.average*(this.games-1)+currentRound) / this.games;
         localStorage.setItem('stats', JSON.stringify(this.getStats()));
     }

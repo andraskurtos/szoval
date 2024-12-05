@@ -3,19 +3,34 @@ import "./less/Settings.less"
 import { SettingsController } from "./settingsController";
 import { Statistics } from "./statistics";
 
-// Component for the settings
+let notificationShown = false;
+
 export function Settings({closeWindow, className, settingsController, stats}: {closeWindow: () => void, className: string, settingsController: SettingsController, stats: Statistics}) {
     let [activetab,setactivetab] = useState("general");
-    let [activebutton,setactivebutton] = useState("normal");
+    let [activebutton,setactivebutton] = useState(settingsController.getDifficulty());
     let [wordInput, setWordInput] = useState("");
+    let [permission, setPermission] = useState(Notification.permission);
+    activebutton = settingsController.getDifficulty();
+
+    if (permission === "granted" && !settingsController.isDailySolved() && !notificationShown) {
+        let notification = new Notification("SZÓVAL", {
+            body: "Elérhető a napi kihívás!",
+            icon: "./logo192.png"});
+        notification.onclick = () => {
+            window.focus();
+            notification.close();
+            
+        }
+        notificationShown = true;
+    }
 
     const onTabClick = (tab:string) => {
         setactivetab(()=>tab);
     };
 
     const onDiffClick = (diff:string) => {
-        setactivebutton(()=>diff);
         settingsController.setDifficulty(diff);
+        setactivebutton(()=>settingsController.getDifficulty());
     }
 
     let statsDict;
@@ -44,6 +59,8 @@ export function Settings({closeWindow, className, settingsController, stats}: {c
                 <div id="general" className={`settings-tab ${activetab==="general"?"":"invisible"}`}>
                     <h2>General</h2>
                     <button onClick={settingsController.toggleTheme}>Dark Mode Toggle</button>
+                    <button onClick={settingsController.loadDaily}>Load Daily Challenge</button>
+                    <button onClick={()=>{Notification.requestPermission().then((permission)=>setPermission(permission));}}>Enable Notifications</button>
                 </div>
                 <div className={`settings-tab ${activetab==="diff"?"":"invisible"}`} id="diff">
                     <h2>Difficulty</h2>

@@ -21,6 +21,11 @@ export class Words {
         this.solution = this.pickWord();
     }
 
+    setSolution(solution: string) {
+        this.solution = solution;
+        console.log(this.solution);
+    }
+
     setWordLength(wordLength: number) {
         this.wordLength = wordLength;
     }
@@ -47,7 +52,7 @@ export class Words {
     // compare a word to the solution, return with array of colors
     // TODO - replace color names with more abstract syntax
     compare(word: string): string[] {
-        let comp = ["white", "white", "white", "white", "white"]
+        let comp = Array(this.wordLength).fill("white");
         word = word.toLowerCase();
         let solution = this.solution.toLowerCase().split("");
 
@@ -79,11 +84,11 @@ export class Words {
         word = word.toLowerCase();
         let length = word.length;
         if (length > 8 || length < 3) {
-            console.log("word invalid length")
+            alert("word invalid length")
             return;
         }
         if (this.words[String(length)].includes(word)) {
-            console.log("word already exists");
+            alert("word already exists");
             return;
         }
         
@@ -94,9 +99,12 @@ export class Words {
     public removeWord(word: string): void {
         word = word.toLowerCase();
         let length = word.length;
-        if (length > 8 || length < 3) return;
+        if (length > 8 || length < 3) {
+            alert("word invalid length");
+            return;
+        }
         if (!this.words[String(length)].includes(word)) {
-            console.log("word does not exist");
+            alert("word does not exist");
             return;
         }
         this.words[String(length)].splice(this.words[String(length)].indexOf(word), 1);
@@ -127,7 +135,7 @@ export class GameActions {
 
         // if it's too short, return
         if (word.length < this.words.getWordLength()) {
-            //console.log("too short");
+            alert("too short");
             return;
         }
 
@@ -149,11 +157,6 @@ export class GameActions {
             return newLetters;
         })
 
-        // if the word is correct, return
-        // TODO - remove this
-        if (comparison.every((color, index) => color === "green")) {
-            //console.log("You win!");
-        }
 
         // set the comparisons
         this.setComparisons((prevComparisons) => {

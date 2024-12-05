@@ -6,20 +6,18 @@ import { Navbar } from './Navbar';
 import { SettingsController } from './settingsController';
 import { useEffect, useState } from 'preact/hooks';
 import { Words } from './logic';
+import "./Pwa";
 
 
+
+let settings = new SettingsController();
 
 export function App() {	
-	let [tries, setTries] = useState(6);
-	let [wordLength, setWordLength] = useState(5);
-	let [words, setWords] = useState(new Words(wordLength));
-	let settings = new SettingsController(setWordLength, setTries, words, tries, wordLength);
-
 
 	return (
 		<div class="content">
 			<h1>Wordle</h1>
-            <WordleGrid tries={tries} wordLength={wordLength} settingsController={settings} words={words}/>
+            <WordleGrid settingsController={settings}/>
 		</div>	
     );
 }
