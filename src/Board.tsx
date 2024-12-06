@@ -1,182 +1,209 @@
 import { useEffect, useState } from "preact/hooks";
 import "./less/Board.less";
 import { Keyboard } from "./Keyboard";
-import { GameActions, Words } from "./logic";
 import { Popup } from "./Popup";
 import { Settings } from "./Settings";
 import { SettingsController } from "./settingsController";
 import { Statistics } from "./statistics";
+import { GameActions } from "./gameactions";
 
-
-// a cell in the board, representing one letter of the word
-// value - the letter
-// color - the color of the cell
-export function WordleCell({ value, color }: { value: string , color: string}){
+/**
+ * Represents a single cell in the Wordle game board.
+ * @param value - The letter displayed in the cell.
+ * @param color - The color representing the cell's state (e.g., correct, incorrect).
+ */
+export function WordleCell({ value, color }: { value: string, color: string }) {
     return (
-        <div className={"wordle-cell "+color+"-cell"}>
+        <div className={"wordle-cell " + color + "-cell"}>
             <p>{value}</p>
         </div>
     );
 }
 
-// the keys of the keyboard
-let keys = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", 
+/**
+ * Array of all possible keyboard keys, including special Hungarian characters.
+ */
+const keys = [
+    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", 
     "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "á", "é", "í", "ó", "ö", "ő", 
-    "ú", "ü", "ű"];
+    "ú", "ü", "ű"
+];
 
+/**
+ * Main game board component for the Wordle game.
+ * Manages the state of guesses, comparisons, and keyboard interactions.
+ * 
+ * @param settingsController - Controller for managing game settings.
+ */
+export function WordleGrid({ settingsController }: { settingsController: SettingsController }) {
 
-// the grid of cells representing the board, where
-// each row is a guess of the word
-// tries - the number of tries
-// wordLength - the length of the words
-export function WordleGrid({settingsController}:{settingsController: SettingsController}){
-    
-    let tries = settingsController.getTries();
-    let wordLength = settingsController.getWordLength();
-    let words = settingsController.getWords();
-    // useState for the guesses of words
-    // two-dimensional array of strings
-    // each row represents a guess
-    // each cell represents a letter
-    let [guess, setGuess] = useState(Array.from({length:tries},()=> Array(wordLength).fill("")));
+    const tries = settingsController.getTries();
+    const wordLength = settingsController.getWordLength();
+    const words = settingsController.getWords();
 
-    // useState for the current row
-    let [currentRow, setCurrentRow] = useState(0);
+    // State for player guesses (rows are guesses, cells are letters).
+    const [guess, setGuess] = useState(Array.from({ length: tries }, () => Array(wordLength).fill("")));
 
-    // useState for the comparisons
-    // two-dimensional array of strings
-    // each row represents a guess
-    // each cell represents the color of the cell
-    let [comparisons, setComparisons] = useState(Array.from({length:tries},()=> Array(wordLength).fill("white")));
+    // State for tracking the current row being edited.
+    const [currentRow, setCurrentRow] = useState(0);
 
-    // useState for the letters
-    // object of strings
-    // each key represents a letter
-    // each value represents the color of the key
-    let [letters, setLetters] = useState(Object.fromEntries(keys.map(key => [key, "white"])));
+    // State for color comparisons of guesses (e.g., correct, misplaced).
+    const [comparisons, setComparisons] = useState(Array.from({ length: tries }, () => Array(wordLength).fill("white")));
 
-    // useState for showing bad guess popup
-    let [badGuess, setBadGuess] = useState(false);
+    // State for keyboard key colors indicating correctness.
+    const [letters, setLetters] = useState(Object.fromEntries(keys.map(key => [key, "white"])));
 
-    let stats = new Statistics();
-    
-    // useEffect for initializing the game
+    // State for displaying the "bad guess" popup.
+    const [badGuess, setBadGuess] = useState(false);
+
+    // Game statistics.
+    const stats = new Statistics();
+
+    // State for controlling the visibility of the settings window.
+    const [settings, setSettings] = useState("invisible");
+
+    /**
+     * Initializes a new game by resetting the board and updating the game state.
+     */
     useEffect(() => {
-        newGame()
+        newGame();
     }, [tries, wordLength]);
 
-
-    // resets the board
     const newGame = () => {
-
-        if (wonGame()|| lostGame()) {
+        if (wonGame() || lostGame()) {
             stats.addRound(currentRow, wonGame());
             settingsController.solveDaily();
         }
-        setGuess(Array.from({length:tries},()=> Array(wordLength).fill("")));
+        setGuess(Array.from({ length: tries }, () => Array(wordLength).fill("")));
         setCurrentRow(0);
-        setComparisons(Array.from({length:tries},()=> Array(wordLength).fill("white")));
+        setComparisons(Array.from({ length: tries }, () => Array(wordLength).fill("white")));
         setLetters(Object.fromEntries(keys.map(key => [key, "white"])));
         if (!settingsController.isDaily()) words.resetSolution();
     };
 
-    let [settings, setSettings] = useState("invisible");
-
+    /**
+     * Closes the settings window.
+     */
     const closeSettings = () => {
-        setSettings(()=>"invisible");
+        setSettings(() => "invisible");
     };
 
-
-    function wonGame() : boolean {
-        for (let comparison of comparisons ){
-            if (comparison.every((color)=> color==="green")) {
-                return true;
-            }
-        }
-        return false;
-    };
-
-    function addButton(key: string) {
-        settingsController.addWord(key);
-        setBadGuess(()=>false);
+    /**
+     * Determines if the player has won the game by checking if any row is fully green.
+     * @returns `true` if the player has won, otherwise `false`.
+     */
+    function wonGame(): boolean {
+        return comparisons.some(comparison => comparison.every(color => color === "green"));
     }
 
-    function lostGame() : boolean {
-        if (currentRow === tries) {
-            return true;
-        }
-    };
+    /**
+     * Adds a guessed word to the word list if the guess is invalid.
+     * @param key - The word to be added.
+     */
+    function addButton(key: string) {
+        settingsController.addWord(key);
+        setBadGuess(() => false);
+    }
 
-    // handles keypresses
+    /**
+     * Determines if the player has lost the game by checking if all attempts are used.
+     * @returns `true` if the player has lost, otherwise `false`.
+     */
+    function lostGame(): boolean {
+        return currentRow === tries;
+    }
+
+    /**
+     * Handles keyboard input and updates the game state accordingly.
+     * 
+     * @param key - The key pressed by the player.
+     */
     const handleKeyPress = (key: string) => {
-        let gameActions = new GameActions(words, setComparisons, setCurrentRow, setLetters, setGuess);
+        const gameActions = new GameActions(words, setComparisons, setCurrentRow, setLetters, setGuess);
 
-        
         switch (key) {
             case "ENTER":
-            if (wonGame() || lostGame()) {
-                newGame();
+                if (wonGame() || lostGame()) {
+                    newGame();
+                } else if (badGuess) {
+                    addButton(guess[currentRow].join(""));
+                } else {
+                    const guessWord = guess[currentRow].join("");
+                    try {
+                        gameActions.wordSubmitted(guessWord, currentRow);
+                    } catch (e) {
+                        setBadGuess(() => true);
+                    }
+                }
                 break;
-            } else if (badGuess) {
-                addButton(guess[currentRow].join(""));
-                break;
-            }
-
-            const guessWord = guess[currentRow].join("");
-            try {
-                gameActions.wordSubmitted(guessWord, currentRow);
-            } catch (e) {
-                setBadGuess(() => true);
-            }
-            break;
 
             case "ESCAPE":
                 if (badGuess) {
                     setBadGuess(() => false);
-                }
-                else {
+                } else {
                     newGame();
                 }
-            break;
+                break;
 
             case "BACKSPACE":
-            gameActions.deleteLetter(currentRow);
-            break;
+                gameActions.deleteLetter(currentRow);
+                break;
 
             case "REFRESH":
-            newGame();
-            break;
+                newGame();
+                break;
 
             case "SETTINGS":
-            setSettings("visible");
-            break;
+                setSettings("visible");
+                break;
 
             default:
-            // type letter into guess
-            gameActions.typedLetter(key, currentRow);
-            break;
+                gameActions.typedLetter(key, currentRow);
+                break;
         }
     };
 
-    // render the board
+    /**
+     * Renders the game board, keyboard, and popups.
+     */
     return (
         <div class="wordle-game">
-            <Popup className={badGuess?"visible":"invisible"} title="Bad Guess" message="This word is not in the wordlist!"
-                   buttonText="EXIT" onClick={()=>setBadGuess(()=>false)}
-                   onClick2={()=>addButton(guess[currentRow].join(""))} button2Text="ADD"/>
-            <Popup className={(wonGame()||lostGame())?"visible":"invisible"} title={wonGame()?"NYERTÉL!":"VESZTETTÉL!"} message={wonGame()?"Szép játék!":("A szó \""+words.getSolution()) + "\" volt."} onClick={newGame} buttonText="Újra!"/>
-            <Settings closeWindow={closeSettings} className={settings} settingsController={settingsController} stats={stats}/>
+            <Popup 
+                className={badGuess ? "visible" : "invisible"} 
+                title="Bad Guess" 
+                message="This word is not in the wordlist!"
+                buttonText="EXIT" 
+                onClick={() => setBadGuess(() => false)}
+                onClick2={() => addButton(guess[currentRow].join(""))} 
+                button2Text="ADD" 
+            />
+            <Popup 
+                className={(wonGame() || lostGame()) ? "visible" : "invisible"} 
+                title={wonGame() ? "NYERTÉL!" : "VESZTETTÉL!"} 
+                message={wonGame() ? "Szép játék!" : ("A szó \"" + words.getSolution() + "\" volt.")} 
+                onClick={newGame} 
+                buttonText="Újra!"
+            />
+            <Settings 
+                closeWindow={closeSettings} 
+                className={settings} 
+                settingsController={settingsController} 
+                stats={stats} 
+            />
             <div className="wordle-grid">
-                {guess.map((row,rowIndex) => (
+                {guess.map((row, rowIndex) => (
                     <div class="wordle-row" key={rowIndex}>
-                        {row.map((cell,cellIndex) =>(
-                            <WordleCell value={cell} key={cellIndex} color={comparisons[rowIndex][cellIndex]}/>
+                        {row.map((cell, cellIndex) => (
+                            <WordleCell 
+                                value={cell} 
+                                key={cellIndex} 
+                                color={comparisons[rowIndex][cellIndex]} 
+                            />
                         ))}
                     </div>
                 ))}
             </div>
-        <Keyboard onKeyPress={handleKeyPress} letters={letters}/>
+            <Keyboard onKeyPress={handleKeyPress} letters={letters} />
         </div>
     );
-
 }

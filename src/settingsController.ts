@@ -1,31 +1,49 @@
 import { DailyChallenge } from "./daily";
-import { Words } from "./logic";
+import { Words } from "./words";
 
-
-
+/**
+ * A SettingsController osztály felelős a játék beállításainak kezeléséért,
+ * beleértve a témát, a nehézségi szintet, a napi kihívásokat és az egyedi szavakat.
+ */
 export class SettingsController {
-    private wordLength = 5;
-    private tries = 6;
-    private isDarkMode = false;
-    private words : Words = new Words(this.wordLength);
-    private difficulty = "normal"
-    private daily: boolean = false;
-    private currentDaily: DailyChallenge = new DailyChallenge();
-    private notifPermission = false;
+    private wordLength = 5; // A szó hosszúsága
+    private tries = 6; // A próbálkozások száma
+    private isDarkMode = false; // A téma (sötét vagy világos)
+    private words: Words = new Words(this.wordLength); // A játékhoz használt szavak
+    private difficulty = "normal"; // A játék nehézségi szintje
+    private daily: boolean = false; // A napi kihívás aktiválása
+    private currentDaily: DailyChallenge = new DailyChallenge(); // A napi kihívás
+    private notifPermission = false; // A notifikációs engedélyek
 
-
+    /**
+     * Beállítja a notifikációs engedélyt.
+     * @param perm - A notifikáció engedélyezését vagy letiltását jelző érték.
+     */
     public setPermission(perm: boolean) {
         this.notifPermission = perm;
     }
 
+    /**
+     * Hozzáad egy új szót a szószedethez.
+     * @param word - A hozzáadni kívánt szó.
+     */
     public addWord(word: string) {
         this.words.addWord(word);
     }
 
+    /**
+     * Eltávolít egy szót a szószedetből.
+     * @param word - Az eltávolítandó szó.
+     */
     public removeWord(word: string) {
         this.words.removeWord(word);
     }
 
+    /**
+     * Beállítja a játék nehézségi szintjét.
+     * A szint beállítja a szó hosszúságát és a próbálkozások számát.
+     * @param difficulty - A választott nehézségi szint ("easy", "normal", "hard", "custom").
+     */
     public setDifficulty(difficulty: string) {
         this.difficulty = difficulty;
         switch (difficulty) {
@@ -46,10 +64,18 @@ export class SettingsController {
         }
     }
 
+    /**
+     * Visszaadja a játék jelenlegi nehézségi szintjét.
+     * @returns A nehézségi szint.
+     */
     public getDifficulty() {
         return this.difficulty;
     }
 
+    /**
+     * Átvált a világos és sötét mód között.
+     * A stílusokat ennek megfelelően módosítja.
+     */
     public toggleTheme = () => {
         const root = document.documentElement;
         this.isDarkMode = !this.isDarkMode;
@@ -101,24 +127,35 @@ export class SettingsController {
         }
     };
 
-    
-
-
+    /**
+     * Beállítja a próbálkozások számát.
+     * A beállított érték a 1 és 12 közötti tartományban lehet.
+     * @param tries - Az új próbálkozás szám.
+     */
     public changeTries(tries: number): void {
         if (tries > 12) this.tries = 12;
-        else if (tries<1) this.tries = 1;
+        else if (tries < 1) this.tries = 1;
         else this.tries = tries;
     };
 
+    /**
+     * Beállítja a szó hosszúságát.
+     * A beállított érték a 2 és 8 közötti tartományban lehet.
+     * @param wordLength - Az új szó hosszúság.
+     */
     public changeWordLength(wordLength: number): void {
         if (wordLength > 8) this.wordLength = 8;
         else if (wordLength < 2) this.wordLength = 2;
         else this.wordLength = wordLength;
         this.words.setWordLength(this.wordLength);
     };
-    
+
+    /**
+     * Betölti a napi kihívást, ha még nem lett megoldva.
+     * Beállítja a nehézségi szintet és a szót.
+     */
     public loadDaily = () => {
-        if (this.currentDaily.isSolved()) { 
+        if (this.currentDaily.isSolved()) {
             alert("daily already solved!");
             return;
         }
@@ -129,34 +166,60 @@ export class SettingsController {
         this.words.setSolution(this.currentDaily.getSolution());
     }
 
+    /**
+     * Megoldja a napi kihívást.
+     */
     public solveDaily = () => {
         if (this.daily === false) return;
         this.currentDaily.setSolved(true);
         this.daily = false;
     }
 
+    /**
+     * Visszaadja, hogy aktív-e a napi kihívás.
+     * @returns Igaz, ha aktív, egyébként hamis.
+     */
     isDaily(): boolean {
         return this.daily;
     }
 
+    /**
+     * Beállítja a napi kihívás aktiváltságát.
+     * @param value - A napi kihívás állapota (igaz vagy hamis).
+     */
     setDaily(value: boolean) {
         this.daily = value;
     }
 
+    /**
+     * Visszaadja a szó hosszúságát.
+     * @returns A szó hosszúsága.
+     */
     public getWordLength(): number {
         return this.wordLength;
     }
 
+    /**
+     * Visszaadja a próbálkozások számát.
+     * @returns A próbálkozások száma.
+     */
     public getTries(): number {
         return this.tries;
     }   
 
+    /**
+     * Visszaadja a szószedetet.
+     * @returns A szószedet.
+     */
     public getWords() {
         return this.words;
     }
 
+    /**
+     * Visszaadja, hogy a napi kihívás már megoldásra került-e.
+     * @returns Igaz, ha megoldva van, egyébként hamis.
+     */
     public isDailySolved(): boolean {
         return this.currentDaily.isSolved();
     }
-
 }

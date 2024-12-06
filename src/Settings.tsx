@@ -1,16 +1,28 @@
 import { useEffect, useState } from "preact/hooks";
-import "./less/Settings.less"
+import "./less/Settings.less";
 import { SettingsController } from "./settingsController";
 import { Statistics } from "./statistics";
 
 let notificationShown = false;
 
+/**
+ * Settings component that allows the user to configure various application settings.
+ *
+ * @param {Object} props - The component props.
+ * @param {Function} props.closeWindow - Function to close the settings window.
+ * @param {string} props.className - Custom CSS class to style the component.
+ * @param {SettingsController} props.settingsController - Controller for managing settings state.
+ * @param {Statistics} props.stats - Statistics object to retrieve and display game statistics.
+ * @returns {JSX.Element} - The rendered settings component.
+ */
 export function Settings({ closeWindow, className, settingsController, stats }: { closeWindow: () => void, className: string, settingsController: SettingsController, stats: Statistics }) {
     let [activetab, setactivetab] = useState("general");
     let [activebutton, setactivebutton] = useState(settingsController.getDifficulty());
     let [wordInput, setWordInput] = useState("");
     let supportsNotifs = 'Notification' in window;
     activebutton = settingsController.getDifficulty();
+    
+    // Show notification if daily challenge is available
     if (supportsNotifs) {
         if (Notification.permission === "granted" && !settingsController.isDailySolved() && !notificationShown) {
             let notification = new Notification("SZÓVAL", {
@@ -20,20 +32,29 @@ export function Settings({ closeWindow, className, settingsController, stats }: 
             notification.onclick = () => {
                 window.focus();
                 notification.close();
-
-            }
+            };
             notificationShown = true;
         }
     }
 
+    /**
+     * Handles tab switch when a tab is clicked.
+     * 
+     * @param {string} tab - The tab to activate.
+     */
     const onTabClick = (tab: string) => {
         setactivetab(() => tab);
     };
 
+    /**
+     * Handles difficulty level change when a difficulty button is clicked.
+     * 
+     * @param {string} diff - The selected difficulty level.
+     */
     const onDiffClick = (diff: string) => {
         settingsController.setDifficulty(diff);
         setactivebutton(() => settingsController.getDifficulty());
-    }
+    };
 
     let statsDict;
     if (statsDict === undefined) {
@@ -43,7 +64,6 @@ export function Settings({ closeWindow, className, settingsController, stats }: 
     useEffect(() => {
         statsDict = stats.getStats();
     }, [stats]);
-
 
     return (
         <div className={`settings ${className}`}>
